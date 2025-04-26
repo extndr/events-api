@@ -22,6 +22,8 @@ class EventSerializer(serializers.ModelSerializer):
             'title',
             'description',
             'city',
+            'location',
+            'organizer',
             'start_time',
             'end_time',
         ]
