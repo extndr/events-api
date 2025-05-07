@@ -1,5 +1,6 @@
 from rest_framework.routers import DefaultRouter
-from api.events.views import CountryViewSet, CityViewSet, EventViewSet
+from api.core.views import CountryViewSet, CityViewSet
+from api.events.views import EventViewSet
 
 router = DefaultRouter()
 

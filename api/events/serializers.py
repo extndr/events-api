@@ -1,28 +1,11 @@
 from rest_framework import serializers
-from .models import Country, City, Event
-
-
-class CountrySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Country
-        fields = ['id', 'name']
-
-
-class CitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = City
-        fields = ['id', 'name', 'country']
-
-    def to_representation(self, instance):
-        rep = super(CitySerializer, self).to_representation(instance)
-        rep['country'] = instance.country.name
-        return rep
+from .models import Event
 
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = [
+        fields = (
             'id',
             'title',
             'description',
@@ -31,7 +14,7 @@ class EventSerializer(serializers.ModelSerializer):
             'organizer',
             'start_time',
             'end_time',
-        ]
+        )
 
     def validate(self, data):
         start_time = data.get('start_time')
