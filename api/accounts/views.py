@@ -1,8 +1,10 @@
+from api.core import permissions
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
+from api.core.permissions import IsSelfOrReadOnly
 from .serializers import UserRegisterSerializer, ProfileSerializer
 
 
@@ -28,6 +30,7 @@ class RegisterView(CreateAPIView):
 
 class ProfileView(RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
+    permission_classes = (IsSelfOrReadOnly,)
 
     def get_object(self):
         return self.request.user.profile
