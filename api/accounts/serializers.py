@@ -22,7 +22,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+
     class Meta:
         model = Profile
-        fields = ['bio', 'location']
+        fields = ['url', 'username', 'bio', 'location']

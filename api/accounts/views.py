@@ -1,11 +1,12 @@
-from api.core import permissions
 from rest_framework import status
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from api.core.permissions import IsSelfOrReadOnly
 from .serializers import UserRegisterSerializer, ProfileSerializer
+from .models import Profile
 
 
 class RegisterView(CreateAPIView):
@@ -28,9 +29,7 @@ class RegisterView(CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
-class ProfileView(RetrieveUpdateAPIView):
+class ProfileViewSet(ModelViewSet):
+    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = (IsSelfOrReadOnly,)
-
-    def get_object(self):
-        return self.request.user.profile
+    permission_classes = (IsAdminUser, IsSelfOrReadOnly)

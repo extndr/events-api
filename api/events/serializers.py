@@ -1,22 +1,44 @@
 from django.utils import timezone
+from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Event, Attendee
+
+from api.accounts.serializers import ProfileSerializer
+from .models import Event
+
+
+class AttendeeSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'profile')
+
+
+class OrganizerSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'profile')
 
 
 class EventSerializer(serializers.ModelSerializer):
+    organizer = OrganizerSerializer(read_only=True)
+    attendees = AttendeeSerializer(many=True, read_only=True)
+
     class Meta:
         model = Event
         fields = (
             'id',
             'title',
-            'description',
+            'about',
             'organizer',
             'city',
             'location',
             'start_time',
             'end_time',
+            'attendees'
         )
-        read_only_fields = ('organizer',)
 
     def validate(self, data):
         start_time = data.get('start_time')
@@ -35,19 +57,6 @@ class EventSerializer(serializers.ModelSerializer):
         return data
 
     def to_representation(self, instance):
-        rep = super(EventSerializer, self).to_representation(instance)
+        rep = super().to_representation(instance)
         rep['city'] = instance.city.name
-        rep['organizer'] = instance.organizer.username
-        return rep
-
-
-class AttendeeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Attendee
-        fields = ('user', 'event', 'joined_at')
-
-    def to_representation(self, instance):
-        rep = super(AttendeeSerializer, self).to_representation(instance)
-        rep['user'] = instance.user.username
-        rep['event'] = instance.event.title
         return rep

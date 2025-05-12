@@ -5,7 +5,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 from api.core.views import CountryViewSet, CityViewSet
-from api.events.views import EventViewSet, AttendeeViewSet
+from api.events.views import EventViewSet
+from api.accounts.views import ProfileViewSet, RegisterView
 
 
 router = DefaultRouter()
@@ -16,7 +17,9 @@ router.register(r'cities', CityViewSet, basename='city')
 
 # events
 router.register(r'events', EventViewSet, basename='event')
-router.register(r'attendees', AttendeeViewSet, basename='attendee')
+
+# accounts
+router.register(r'profiles', ProfileViewSet, basename='profile')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -24,5 +27,5 @@ urlpatterns = [
     path('jwt/', TokenObtainPairView.as_view(), name='token_obtain'),
     path('jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    path('accounts/', include('api.accounts.urls')),
+    path('register/', RegisterView.as_view(), name='register'),
 ]

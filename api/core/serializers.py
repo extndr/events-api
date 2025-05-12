@@ -14,6 +14,6 @@ class CitySerializer(ModelSerializer):
         fields = ('id', 'name', 'country')
 
     def to_representation(self, instance):
-        rep = super(CitySerializer, self).to_representation(instance)
+        rep = super().to_representation(instance)
         rep['country'] = instance.country.name
         return rep
