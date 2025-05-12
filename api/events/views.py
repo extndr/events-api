@@ -22,6 +22,12 @@ class EventViewSet(ModelViewSet):
         event = self.get_object()
         user = request.user
 
+        if user == event.organizer:
+            return Response(
+                {'detail': 'Organizer cannot be an attendee.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         if user in event.attendees.all():
             return Response(
                 {'detail': 'You are already attending this event.'},
@@ -42,6 +48,12 @@ class EventViewSet(ModelViewSet):
     def unattend(self, request, pk=None):
         event = self.get_object()
         user = request.user
+
+        if user == event.organizer:
+            return Response(
+                {'detail': 'Organizer cannot leave as attendee.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         if user not in event.attendees.all():
             return Response(
