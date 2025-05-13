@@ -3,16 +3,19 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+
 from .models import Event
 from .serializers import EventSerializer
 from .permissions import IsOrganizerOrReadOnly
 from .services import attend_event, unattend_event
+from .filters import EventFilter
 
 
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = (IsOrganizerOrReadOnly,)
+    filterset_class = EventFilter
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def attend(self, request, pk=None):

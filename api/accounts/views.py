@@ -14,6 +14,7 @@ from .serializers import (
     UserSerializer
 )
 from .models import Profile
+from .filters import ProfileFilter
 
 
 class RegisterView(generics.CreateAPIView):
@@ -36,11 +37,13 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAdminUser,)
+    filterset_fields = ('username', 'email', 'is_staff', 'is_active')
 
 
 class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    filterset_class = ProfileFilter
 
     @action(
         detail=False,
