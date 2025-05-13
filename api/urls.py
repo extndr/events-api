@@ -1,44 +1,26 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView
-)
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
     SpectacularRedocView,
 )
-from api.core.views import CountryViewSet, CityViewSet
-from api.events.views import EventViewSet
-from api.accounts.views import ProfileViewSet, UserViewSet, RegisterView
-
-
-router = DefaultRouter()
-
-# core
-router.register(r'countries', CountryViewSet, basename='country')
-router.register(r'cities', CityViewSet, basename='city')
-
-# events
-router.register(r'events', EventViewSet, basename='event')
-
-# accounts
-router.register(r'users', UserViewSet, basename='user')
-router.register(r'profiles', ProfileViewSet, basename='profile')
-
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
-    # OpenAPI
+    # API modules
+    path('core/', include('api.core.urls')),
+    path('events/', include('api.events.urls')),
+    path('accounts/', include('api.accounts.urls')),
+
+    # Auth
+    path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain'),
+    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # API docs
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-
-    # Auth
-    path('register/', RegisterView.as_view(), name='register'),
-    path('jwt/', TokenObtainPairView.as_view(), name='token_obtain'),
-    path('jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
-    # API router
-    path('', include(router.urls)),
 ]
