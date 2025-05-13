@@ -4,6 +4,11 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
 )
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
 from api.core.views import CountryViewSet, CityViewSet
 from api.events.views import EventViewSet
 from api.accounts.views import ProfileViewSet, UserViewSet, RegisterView
@@ -24,10 +29,16 @@ router.register(r'profiles', ProfileViewSet, basename='profile')
 
 
 urlpatterns = [
-    path('', include(router.urls)),
+    # OpenAPI
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
+    # Auth
     path('register/', RegisterView.as_view(), name='register'),
-
     path('jwt/', TokenObtainPairView.as_view(), name='token_obtain'),
     path('jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # API router
+    path('', include(router.urls)),
 ]
