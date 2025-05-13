@@ -11,6 +11,7 @@ class Event(models.Model):
         on_delete=models.CASCADE,
         related_name='organized_events'
     )
+    capacity = models.PositiveIntegerField(null=True, blank=True)
     city = models.ForeignKey(
         City,
         on_delete=models.CASCADE,

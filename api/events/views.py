@@ -28,6 +28,12 @@ class EventViewSet(ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        if event.capacity is not None and event.attendees.count() >= event.capacity:
+            return Response(
+                {'detail': 'Event is at full capacity.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         if user in event.attendees.all():
             return Response(
                 {'detail': 'You are already attending this event.'},

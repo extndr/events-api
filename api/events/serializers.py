@@ -37,7 +37,8 @@ class EventSerializer(serializers.ModelSerializer):
             'location',
             'start_time',
             'end_time',
-            'attendees'
+            'attendees',
+            'capacity'
         )
 
     def validate(self, data):
