@@ -9,18 +9,14 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
+    def create(self, validated_data):
+        from .services import register_user
+        return register_user(**validated_data)
+
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("This email is already exists.")
         return value
-
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password'],
-        )
-        return user
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):

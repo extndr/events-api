@@ -6,6 +6,7 @@ from rest_framework import status
 from .models import Event
 from .serializers import EventSerializer
 from .permissions import IsOrganizerOrReadOnly
+from .services import attend_event, unattend_event
 
 
 class EventViewSet(ModelViewSet):
@@ -13,65 +14,23 @@ class EventViewSet(ModelViewSet):
     serializer_class = EventSerializer
     permission_classes = (IsOrganizerOrReadOnly,)
 
-    @action(
-        detail=True,
-        methods=['post'],
-        permission_classes=(IsAuthenticated,),
-    )
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def attend(self, request, pk=None):
         event = self.get_object()
-        user = request.user
+        try:
+            message = attend_event(event, request.user)
+            return Response({'detail': message}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        if user == event.organizer:
-            return Response(
-                {'detail': 'Organizer cannot be an attendee.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if event.capacity is not None and event.attendees.count() >= event.capacity:
-            return Response(
-                {'detail': 'Event is at full capacity.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if user in event.attendees.all():
-            return Response(
-                {'detail': 'You are already attending this event.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        event.attendees.add(user)
-        return Response(
-            {'detail': 'You are now attending the event.'},
-            status=status.HTTP_200_OK
-        )
-
-    @action(
-        detail=True,
-        methods=['post'],
-        permission_classes=(IsAuthenticated,),
-    )
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def unattend(self, request, pk=None):
         event = self.get_object()
-        user = request.user
-
-        if user == event.organizer:
-            return Response(
-                {'detail': 'Organizer cannot leave as attendee.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if user not in event.attendees.all():
-            return Response(
-                {'detail': 'You are not attending this event.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        event.attendees.remove(user)
-        return Response(
-            {'detail': 'You have successfully left the event.'},
-            status=status.HTTP_204_NO_CONTENT
-        )
+        try:
+            message = unattend_event(event, request.user)
+            return Response({'detail': message}, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
         serializer.save(organizer=self.request.user)

@@ -1,9 +1,8 @@
-from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAdminUser, AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
+from rest_framework import status
 from api.core.permissions import IsSelfOrReadOnly
 from .serializers import UserRegisterSerializer, ProfileSerializer
 from .models import Profile
@@ -16,16 +15,12 @@ class RegisterView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh)
+        result = serializer.save()
 
         return Response({
             "message": "User created successfully",
-            "access": access_token,
-            "refresh": refresh_token,
+            "access": result["access"],
+            "refresh": result["refresh"],
         }, status=status.HTTP_201_CREATED)
 
 
