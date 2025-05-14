@@ -8,7 +8,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['id', 'username', 'bio', 'location']
+        fields = ('id', 'username', 'bio', 'location')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,5 +31,5 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        from .services import register_user
-        return register_user(**validated_data)
+        from .services import UserService
+        return UserService.create_user(**validated_data)
