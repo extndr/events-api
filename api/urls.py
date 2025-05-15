@@ -14,6 +14,7 @@ urlpatterns = [
     path('core/', include('api.core.urls')),
     path('events/', include('api.events.urls')),
     path('accounts/', include('api.accounts.urls')),
+    path('users/', include('api.users.urls')),
 
     # Auth
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain'),

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'api.core',
     'api.events',
     'api.accounts',
+    'api.users',
 ]
 
 MIDDLEWARE = [

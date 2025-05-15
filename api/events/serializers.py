@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.accounts.serializers import ProfileSerializer
+from api.users.serializers import ProfileSerializer
 from .models import Event
 
 

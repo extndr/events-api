@@ -1,22 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Profile
-
-
-class ProfileSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username', read_only=True)
-
-    class Meta:
-        model = Profile
-        fields = ('id', 'username', 'bio', 'location')
-
-
-class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ('id', 'profile', 'email', 'is_staff', 'is_active')
+from api.accounts.services import UserService
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -25,11 +9,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("This email is already exists.")
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters.")
         return value
 
     def create(self, validated_data):
-        from .services import UserService
         return UserService.create_user(**validated_data)
