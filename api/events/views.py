@@ -7,7 +7,7 @@ from rest_framework import status
 from .models import Event
 from .serializers import EventSerializer
 from .permissions import IsOrganizerOrReadOnly
-from .services import AttendeeService
+from .services import EventService
 from .filters import EventFilter
 
 
@@ -20,20 +20,14 @@ class EventViewSet(ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def attend(self, request, pk=None):
         event = self.get_object()
-        try:
-            message = AttendeeService.attend_event(event, request.user)
-            return Response({'detail': message}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        message = EventService.add_attendee(event, request.user)
+        return Response({'detail': message}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def unattend(self, request, pk=None):
         event = self.get_object()
-        try:
-            message = AttendeeService.unattend_event(event, request.user)
-            return Response({'detail': message}, status=status.HTTP_204_NO_CONTENT)
-        except Exception as e:
-            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        message = EventService.remove_attendee(event, request.user)
+        return Response({'detail': message}, status=status.HTTP_204_NO_CONTENT)
 
     def perform_create(self, serializer):
-        serializer.save(organizer=self.request.user)
+        EventService.create_event(serializer, self.request.user)

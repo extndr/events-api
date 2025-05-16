@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from api.core.permissions import IsSelfOrReadOnly
@@ -32,10 +31,7 @@ class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
         url_path='me'
     )
     def me(self, request):
-        try:
-            profile = ProfileService.get_profile(request.user)
-        except ValidationError as e:
-            return Response(e.detail, status=404)
+        profile = ProfileService.get_profile(request.user)
 
         if request.method == 'GET':
             serializer = self.get_serializer(profile)

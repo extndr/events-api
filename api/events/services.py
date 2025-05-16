@@ -1,16 +1,30 @@
 from .models import Event
-from .validators import validate_attend_event, validate_unattend_event
+from rest_framework.exceptions import ValidationError
 
 
-class AttendeeService:
+class EventService:
     @staticmethod
-    def attend_event(event: Event, user) -> str:
-        validate_attend_event(event, user)
+    def create_event(serializer, organizer):
+        return serializer.save(organizer=organizer)
+
+    @staticmethod
+    def add_attendee(event: Event, user) -> str:
+        if user == event.organizer:
+            raise ValidationError("Organizer cannot be an attendee.")
+        if user in event.attendees.all():
+            raise ValidationError("You are already attending this event.")
+        if event.capacity is not None and event.attendees.count() >= event.capacity:
+            raise ValidationError("Event is at full capacity.")
+
         event.attendees.add(user)
         return "You are now attending the event."
 
     @staticmethod
-    def unattend_event(event: Event, user) -> str:
-        validate_unattend_event(event, user)
+    def remove_attendee(event: Event, user) -> str:
+        if user == event.organizer:
+            raise ValidationError("Organizer cannot leave as attendee.")
+        if user not in event.attendees.all():
+            raise ValidationError("You are not attending this event.")
+
         event.attendees.remove(user)
         return "You have successfully left the event."
