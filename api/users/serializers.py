@@ -10,7 +10,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('id', 'username', 'bio', 'location')
-        read_only_fields = ('id', 'username')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,4 +17,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'profile', 'email', 'is_active', 'is_staff', 'is_superuser')
+        fields = (
+            'id',
+            'username',
+            'profile',
+            'email',
+            'is_active',
+            'is_staff',
+            'is_superuser'
+        )

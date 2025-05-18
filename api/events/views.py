@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Event
-from .serializers import EventSerializer
+from .serializers import EventSerializer, EventShortSerializer
 from .permissions import IsOrganizerOrReadOnly
 from .services import EventService
 from .filters import EventFilter
@@ -13,9 +13,13 @@ from .filters import EventFilter
 
 class EventViewSet(ModelViewSet):
     queryset = Event.objects.all()
-    serializer_class = EventSerializer
     permission_classes = (IsOrganizerOrReadOnly,)
     filterset_class = EventFilter
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return EventShortSerializer
+        return EventSerializer
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def attend(self, request, pk=None):

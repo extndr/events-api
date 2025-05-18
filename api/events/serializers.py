@@ -1,30 +1,18 @@
 from django.utils import timezone
-from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from api.users.serializers import ProfileSerializer
 from .models import Event
 
 
-class AttendeeSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ('id', 'profile')
-
-
-class OrganizerSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(read_only=True)
-
-    class Meta:
-        model = User
-        fields = ('id', 'profile')
-
-
-class EventSerializer(serializers.ModelSerializer):
-    organizer = OrganizerSerializer(read_only=True)
-    attendees = AttendeeSerializer(many=True, read_only=True)
+class EventSerializer(serializers.HyperlinkedModelSerializer):
+    organizer = ProfileSerializer(source='organizer.profile', read_only=True)
+    attendees = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='profile-detail'
+    )
+    attendees_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
@@ -38,8 +26,13 @@ class EventSerializer(serializers.ModelSerializer):
             'start_time',
             'end_time',
             'attendees',
-            'capacity'
+            'attendees_count',
+            'capacity',
+            'url'
         )
+
+    def get_attendees_count(self, obj):
+        return obj.attendees.count()
 
     def validate(self, data):
         start_time = data.get('start_time')
@@ -61,3 +54,17 @@ class EventSerializer(serializers.ModelSerializer):
         rep = super().to_representation(instance)
         rep['city'] = instance.city.name
         return rep
+
+
+class EventShortSerializer(EventSerializer):
+    class Meta:
+        model = Event
+        fields = (
+            'id',
+            'title',
+            'city',
+            'capacity',
+            'start_time',
+            'attendees_count',
+            'url'
+        )
