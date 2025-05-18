@@ -1,28 +1,59 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
-from api.users.models import Profile
-
-
-class ProfileSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username', read_only=True)
-
-    class Meta:
-        model = Profile
-        fields = ('id', 'username', 'bio', 'location')
+User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(read_only=True)
-
+class UserDetailSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = (
             'id',
             'username',
-            'profile',
+            'bio',
+            'url',
+        )
+
+
+class UserSummarySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'url',
+        )
+
+
+class PrivateUserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
             'email',
+            'country',
+            'city',
+            'url',
+        )
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        if instance.country:
+            rep['country'] = instance.country.name
+        if instance.city:
+            rep['city'] = instance.city.name
+        return rep
+
+
+class EnhancedUserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
+            'bio',
             'is_active',
             'is_staff',
-            'is_superuser'
+            'is_superuser',
+            'url'
         )

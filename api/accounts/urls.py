@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from api.accounts.views import RegisterView
+from .views import RegisterView
 
 
 urlpatterns = [

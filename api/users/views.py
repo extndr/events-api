@@ -1,45 +1,36 @@
-from django.contrib.auth.models import User
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.decorators import action
-from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.contrib.auth import get_user_model
 
+from .serializers import (
+    UserDetailSerializer,
+    EnhancedUserSerializer,
+    UserSummarySerializer,
+    PrivateUserSerializer
+)
 from api.core.permissions import IsSelfOrReadOnly
+from rest_framework import generics
 
-from .serializers import UserSerializer, ProfileSerializer
-from .models import Profile
-from .filters import ProfileFilter
-from .services import ProfileService
+User = get_user_model()
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (IsAdminUser,)
-    filterset_fields = ('username', 'email', 'is_staff', 'is_active')
+    serializer_class = UserSummarySerializer
+    permission_classes = (AllowAny,)
 
 
-class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    filterset_class = ProfileFilter
+class UserDetailView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (IsAuthenticated, IsSelfOrReadOnly,)
 
-    @action(
-        detail=False,
-        methods=['get', 'patch'],
-        permission_classes=[IsAuthenticated & IsSelfOrReadOnly],
-        url_path='me'
-    )
-    def me(self, request):
-        profile = ProfileService.get_profile(request.user)
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return EnhancedUserSerializer
+        return UserDetailSerializer
 
-        if request.method == 'GET':
-            serializer = self.get_serializer(profile)
-            return Response(serializer.data)
 
-        serializer = self.get_serializer(profile, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+class MeView(generics.RetrieveUpdateAPIView):
+    serializer_class = PrivateUserSerializer
 
-        updated_profile = ProfileService.update_profile(profile, serializer.validated_data)
-        response_serializer = self.get_serializer(updated_profile)
-        return Response(response_serializer.data)
+    def get_object(self):
+        return self.request.user

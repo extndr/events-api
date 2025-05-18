@@ -1,25 +1,17 @@
-from django.contrib.auth.models import User
 from rest_framework.exceptions import ValidationError
 
-from api.users.services import ProfileService
+from .models import User
 
 
 class UserService:
     @staticmethod
-    def create_user(username, email, password, city) -> User:
+    def create_user(username, email, password, country) -> User:
         try:
             user = User.objects.create_user(
                 username=username,
                 email=email,
-                password=password
-            )
-
-            country = city.country
-            location = f"{city.name}, {country.name}"
-
-            ProfileService.update_profile(
-                profile=user.profile,
-                data={"location": location}
+                password=password,
+                country=country,
             )
 
             return user

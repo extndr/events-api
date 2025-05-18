@@ -1,17 +1,16 @@
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from api.users.serializers import ProfileSerializer
 from .models import Event
+from api.users.serializers import UserSummarySerializer
+
+User = get_user_model()
 
 
 class EventSerializer(serializers.HyperlinkedModelSerializer):
-    organizer = ProfileSerializer(source='organizer.profile', read_only=True)
-    attendees = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='profile-detail'
-    )
+    organizer = UserSummarySerializer(read_only=True)
+    attendees = UserSummarySerializer(many=True, read_only=True)
     attendees_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -21,13 +20,13 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
             'title',
             'about',
             'organizer',
+            'capacity',
             'city',
             'location',
             'start_time',
             'end_time',
             'attendees',
             'attendees_count',
-            'capacity',
             'url'
         )
 
@@ -56,7 +55,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         return rep
 
 
-class EventShortSerializer(EventSerializer):
+class EventSummarySerializer(EventSerializer):
     class Meta:
         model = Event
         fields = (

@@ -1,5 +1,6 @@
-from .models import Event
 from rest_framework.exceptions import ValidationError
+
+from .models import Event
 
 
 class EventService:

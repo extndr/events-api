@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Event
-from .serializers import EventSerializer, EventShortSerializer
+from .serializers import EventSerializer, EventSummarySerializer
 from .permissions import IsOrganizerOrReadOnly
 from .services import EventService
 from .filters import EventFilter
@@ -18,7 +18,7 @@ class EventViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return EventShortSerializer
+            return EventSummarySerializer
         return EventSerializer
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])

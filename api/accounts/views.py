@@ -1,7 +1,8 @@
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from api.accounts.serializers import UserRegisterSerializer
+
+from .serializers import UserRegisterSerializer
 
 
 class RegisterView(generics.CreateAPIView):
