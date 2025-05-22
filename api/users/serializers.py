@@ -4,14 +4,13 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class UserDetailSerializer(serializers.HyperlinkedModelSerializer):
+class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
             'id',
             'username',
             'bio',
-            'url',
         )
 
 
@@ -19,17 +18,19 @@ class UserSummarySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = (
+            'id',
             'username',
             'url',
         )
 
 
-class PrivateUserSerializer(serializers.HyperlinkedModelSerializer):
+class PrivateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
             'id',
             'username',
+            'bio',
             'email',
             'country',
             'city',
@@ -45,7 +46,7 @@ class PrivateUserSerializer(serializers.HyperlinkedModelSerializer):
         return rep
 
 
-class EnhancedUserSerializer(serializers.HyperlinkedModelSerializer):
+class EnhancedUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -55,5 +56,4 @@ class EnhancedUserSerializer(serializers.HyperlinkedModelSerializer):
             'is_active',
             'is_staff',
             'is_superuser',
-            'url'
         )

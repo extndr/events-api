@@ -1,34 +1,68 @@
+from django.core.validators import MinLengthValidator
+from django.contrib.auth.password_validation import validate_password
+
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from api.core.models import Country
-
 from .models import User
 from .services import UserService
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    country = serializers.PrimaryKeyRelatedField(
-        queryset=Country.objects.all(), write_only=True
+    username = serializers.CharField(
+        validators=[
+            MinLengthValidator(3),
+            UniqueValidator(queryset=User.objects.all())
+        ]
     )
-    password = serializers.CharField(write_only=True)
+    country = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(),
+        required=True
+    )
+    email = serializers.EmailField(
+        required=True,
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all()
+            )
+        ]
+    )
+    password = serializers.CharField(
+        write_only=True,
+        validators=[validate_password]
+    )
 
     class Meta:
         model = User
-        fields = ('username', 'country', 'email', 'password')
+        fields = (
+            'username',
+            'country',
+            'email',
+            'password',
+        )
 
     def create(self, validated_data):
-        return UserService.create_user(**validated_data)
+        return UserService.register_user(**validated_data)
 
 
 class ResetPasswordRequestSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    email = serializers.EmailField(required=True)
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError('User with this email not found.')
+        return value
 
 
 class ResetPasswordConfirmSerializer(serializers.Serializer):
-    new_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(
+        write_only=True,
+        validators=[validate_password]
+    )
     confirm_password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        if data["new_password"] != data["confirm_password"]:
-            raise serializers.ValidationError("Passwords don't match.")
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError('Passwords do not match.')
         return data

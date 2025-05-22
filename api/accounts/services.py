@@ -1,22 +1,18 @@
 from rest_framework.exceptions import ValidationError
 from .models import User
 from .utils import get_user_from_token
+from api.core.models import Country
 
 
 class UserService:
     @staticmethod
-    def create_user(username, email, password, country) -> User:
-        try:
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password,
-                country=country,
-            )
-
-            return user
-        except Exception as e:
-            raise ValidationError({"error": f"An error occurred: {str(e)}"})
+    def register_user(username: str, email: str, password: str, country: Country) -> User:
+        return User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            country=country,
+        )
 
     @staticmethod
     def reset_password(token: str, new_password: str):

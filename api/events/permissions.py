@@ -14,4 +14,7 @@ class IsOrganizerOrReadOnly(BasePermission):
         )
 
     def has_object_permission(self, request, view, obj):
-        return bool(obj.organizer == request.user)
+        return bool(
+            request.method in SAFE_METHODS or
+            obj.organizer == request.user
+        )

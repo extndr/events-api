@@ -1,5 +1,3 @@
-from django.contrib.auth import get_user_model
-
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -10,10 +8,9 @@ from .serializers import (
     ResetPasswordRequestSerializer,
     ResetPasswordConfirmSerializer
 )
+from .models import User
 from .services import UserService
 from .utils import send_password_reset_email
-
-User = get_user_model()
 
 
 class RegisterView(generics.CreateAPIView):
@@ -24,7 +21,7 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+        return Response({"detail": "User registered successfully"}, status=status.HTTP_201_CREATED)
 
 
 class ResetPasswordRequestView(generics.GenericAPIView):
@@ -34,16 +31,15 @@ class ResetPasswordRequestView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data["email"]
 
-        try:
-            send_password_reset_email(email=email, request=request)
-            return Response(
-                {"detail": "Password reset link has been sent to your email."},
-                status=status.HTTP_200_OK
-            )
-        except ValidationError as e:
-            return Response({"detail": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+        email = serializer.validated_data["email"]
+        user = User.objects.get(email=email)
+
+        send_password_reset_email(user=user, request=request)
+        return Response(
+            {"detail": "Password reset link has been sent to your email."},
+            status=status.HTTP_200_OK
+        )
 
 
 class ResetPasswordConfirmView(generics.GenericAPIView):
