@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from .models import Event
+from api.core.models import City
 from api.users.serializers import UserSummarySerializer
 
 User = get_user_model()
@@ -10,6 +11,7 @@ User = get_user_model()
 
 class EventSerializer(serializers.HyperlinkedModelSerializer):
     organizer = UserSummarySerializer(read_only=True)
+    city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
     attendees = UserSummarySerializer(many=True, read_only=True)
     attendees_count = serializers.SerializerMethodField()
 
@@ -37,15 +39,17 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         start_time = data.get('start_time')
         end_time = data.get('end_time')
 
+        errors = {}
+
         if start_time and end_time:
             if end_time <= start_time:
-                raise serializers.ValidationError(
-                    "End time must be after start time."
-                )
+                errors['end_time'] = "End time must be after start time."
+
             if start_time < timezone.now():
-                raise serializers.ValidationError(
-                    "Event cannot start in the past."
-                )
+                errors['start_time'] = "Event cannot start in the past."
+
+        if errors:
+            raise serializers.ValidationError(errors)
 
         return data
 
@@ -56,7 +60,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class EventSummarySerializer(EventSerializer):
-    class Meta:
+    class Meta(EventSerializer.Meta):
         model = Event
         fields = (
             'id',

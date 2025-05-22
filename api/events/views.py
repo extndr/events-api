@@ -34,4 +34,4 @@ class EventViewSet(ModelViewSet):
         return Response({'detail': message}, status=status.HTTP_204_NO_CONTENT)
 
     def perform_create(self, serializer):
-        EventService.create_event(serializer, self.request.user)
+        serializer.save(organizer=self.request.user)

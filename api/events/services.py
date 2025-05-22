@@ -5,10 +5,6 @@ from .models import Event
 
 class EventService:
     @staticmethod
-    def create_event(serializer, organizer):
-        return serializer.save(organizer=organizer)
-
-    @staticmethod
     def add_attendee(event: Event, user) -> str:
         if user == event.organizer:
             raise ValidationError("Organizer cannot be an attendee.")

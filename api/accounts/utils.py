@@ -5,7 +5,6 @@ from django.conf import settings
 from django.urls import reverse
 from django.core.mail import send_mail
 
-from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 
@@ -26,12 +25,7 @@ def get_user_from_token(token):
         return None
 
 
-def build_password_reset_url(email: str, request) -> str:
-    try:
-        user = User.objects.get(email=email)
-    except User.DoesNotExist:
-        raise ValidationError({"detail": "User with this email not found."})
-
+def build_password_reset_url(user, request) -> str:
     token = generate_reset_token(user)
     reset_url = request.build_absolute_uri(
         reverse("reset-password-confirm")
@@ -39,12 +33,12 @@ def build_password_reset_url(email: str, request) -> str:
     return reset_url
 
 
-def send_password_reset_email(email: str, request):
-    reset_url = build_password_reset_url(email=email, request=request)
+def send_password_reset_email(user, request):
+    reset_url = build_password_reset_url(user=user, request=request)
     send_mail(
         'Password Reset',
         f'Click the link to reset your password: {reset_url}',
         settings.DEFAULT_FROM_EMAIL,
-        [email],
+        [user.email],
     )
     return reset_url
