@@ -47,6 +47,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 class ResetPasswordRequestSerializer(serializers.Serializer):
+    """
+    Serializer for password reset request. Takes user email.
+    """
+
     email = serializers.EmailField(required=True)
 
     def validate_email(self, value):
@@ -56,6 +60,12 @@ class ResetPasswordRequestSerializer(serializers.Serializer):
 
 
 class ResetPasswordConfirmSerializer(serializers.Serializer):
+    """
+    Serializer for confirming password reset.
+
+    Requires new_password and confirm_password. Validates that both match.
+    """
+
     new_password = serializers.CharField(
         write_only=True,
         validators=[validate_password]

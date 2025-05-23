@@ -3,6 +3,10 @@ from .models import Event
 
 
 class EventFilter(django_filters.FilterSet):
+    """
+    Filter events by start time, end time, organizer, and city.
+    """
+
     start_time = django_filters.DateTimeFilter(
         field_name="start_time",
         lookup_expr='gte'

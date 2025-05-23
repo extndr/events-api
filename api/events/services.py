@@ -4,8 +4,16 @@ from .models import Event
 
 
 class EventService:
+    """
+    Service class to handle event logic, such as adding and removing attendees.
+    """
+
     @staticmethod
     def add_attendee(event: Event, user) -> str:
+        """
+        Add a user to the event's attendees list.
+        """
+
         if user == event.organizer:
             raise ValidationError("Organizer cannot be an attendee.")
         if user in event.attendees.all():
@@ -18,6 +26,10 @@ class EventService:
 
     @staticmethod
     def remove_attendee(event: Event, user) -> str:
+        """
+        Remove a user from the event's attendees list.
+        """
+
         if user == event.organizer:
             raise ValidationError("Organizer cannot leave as attendee.")
         if user not in event.attendees.all():

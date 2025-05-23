@@ -10,6 +10,10 @@ User = get_user_model()
 
 
 class EventSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer for event details.
+    """
+
     organizer = UserSummarySerializer(read_only=True)
     city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
     attendees = UserSummarySerializer(many=True, read_only=True)
@@ -33,9 +37,18 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         )
 
     def get_attendees_count(self, obj):
+        """
+        Get the number of attendees for the event.
+        """
+
         return obj.attendees.count()
 
     def validate(self, data):
+        """
+        Validate the start and end times of the event.
+        Ensures the event doesn't start in the past and that the end time is after the start time.
+        """
+
         start_time = data.get('start_time')
         end_time = data.get('end_time')
 
@@ -54,12 +67,20 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         return data
 
     def to_representation(self, instance):
+        """
+        Customize the representation of the event, including the city name.
+        """
+
         rep = super().to_representation(instance)
         rep['city'] = instance.city.name
         return rep
 
 
 class EventSummarySerializer(EventSerializer):
+    """
+    Serializer for a brief event summary.
+    """
+
     class Meta(EventSerializer.Meta):
         model = Event
         fields = (
