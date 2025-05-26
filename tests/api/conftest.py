@@ -1,5 +1,7 @@
 import pytest
 import uuid
+import random
+import string
 
 from rest_framework.test import APIClient
 from rest_framework.test import APIRequestFactory
@@ -32,8 +34,10 @@ def factory():
 
 @pytest.fixture
 def country_factory():
-    def create_country(name='testcountry'):
-        return Country.objects.create(name=name)
+    def create_country(name='testcountry', country_code=None):
+        if country_code is None:
+            country_code = ''.join(random.choices(string.ascii_uppercase, k=2))
+        return Country.objects.create(name=name, code=country_code)
     return create_country
 
 

@@ -13,7 +13,7 @@ def test_country_serializer_output(country):
 
 @pytest.mark.django_db
 def test_country_serializer_input_valid():
-    input_data = {'name': 'New Country'}
+    input_data = {'name': 'New Country', 'code': 'UK'}
     serializer = CountrySerializer(data=input_data)
 
     assert serializer.is_valid()
@@ -23,9 +23,10 @@ def test_country_serializer_input_valid():
 
 
 @pytest.mark.django_db
-def test_country_serializer_invalid_missing_name():
-    input_data = {'name': ''}
+def test_country_serializer_invalid_missing_fields():
+    input_data = {'name': '', 'code': ''}
     serializer = CountrySerializer(data=input_data)
 
     assert not serializer.is_valid()
     assert 'name' in serializer.errors
+    assert 'code' in serializer.errors

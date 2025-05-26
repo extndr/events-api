@@ -26,3 +26,4 @@ def test_country_detail(auth_client, country):
 
     assert response.status_code == status.HTTP_200_OK
     assert 'name' in response.data
+    assert 'code' in response.data
