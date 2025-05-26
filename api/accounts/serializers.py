@@ -11,8 +11,8 @@ from .services import UserService
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
+        min_length=3,
         validators=[
-            MinLengthValidator(3),
             UniqueValidator(queryset=User.objects.all())
         ]
     )
@@ -23,12 +23,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
         validators=[
-            UniqueValidator(
-                queryset=User.objects.all()
-            )
+            UniqueValidator(queryset=User.objects.all())
         ]
     )
     password = serializers.CharField(
+        style={'input_type': 'password'},
         write_only=True,
         validators=[validate_password]
     )
@@ -67,10 +66,14 @@ class ResetPasswordConfirmSerializer(serializers.Serializer):
     """
 
     new_password = serializers.CharField(
+        style={'input_type': 'password'},
         write_only=True,
         validators=[validate_password]
     )
-    confirm_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(
+        style={'input_type': 'password'},
+        write_only=True
+    )
 
     def validate(self, data):
         if data['new_password'] != data['confirm_password']:
