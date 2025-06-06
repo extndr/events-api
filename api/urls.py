@@ -1,4 +1,5 @@
 from django.urls import path, include
+from django.contrib.admin.views.decorators import staff_member_required
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
@@ -13,8 +14,8 @@ urlpatterns = [
     path('accounts/', include('api.accounts.urls')),
     path('users/', include('api.users.urls')),
 
-    # API docs
-    path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    # API docs (only for admins)
+    path('schema/', staff_member_required(SpectacularAPIView.as_view()), name='schema'),
+    path('docs/', staff_member_required(SpectacularSwaggerView.as_view(url_name='schema')), name='swagger-ui'),
+    path('docs/redoc/', staff_member_required(SpectacularRedocView.as_view(url_name='schema')), name='redoc'),
 ]
