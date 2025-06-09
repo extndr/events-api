@@ -2,7 +2,7 @@ import os
 import django
 
 # Update this if your settings module path is different!
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.local')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
 from api.core.models import Country, City
