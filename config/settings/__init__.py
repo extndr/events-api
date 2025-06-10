@@ -1,3 +1,5 @@
+# flake8: noqa F401
+
 from decouple import config
 
 env = config('DJANGO_ENV', default='local').lower()

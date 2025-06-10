@@ -1,3 +1,5 @@
+# flake8: noqa F401, F403
+
 from .base import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
