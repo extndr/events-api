@@ -71,4 +71,4 @@ jobs:
         run: pytest --cov=api --cov-report=term
 
       - name: Run flake8
-        run: flake8 .
+        run: flake8 --config .flake8 .
