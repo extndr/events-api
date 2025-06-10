@@ -25,6 +25,15 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DJANGO_ENV: local
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -45,43 +54,21 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --no-cache-dir -r requirements.txt
-          pip install --no-cache-dir pytest pytest-cov flake8
-
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      - name: Set environment variables for Docker Compose
-        run: |
-          echo "DB_HOST=db" >> $GITHUB_ENV
-          echo "DB_PORT=5432" >> $GITHUB_ENV
-          echo "DB_NAME=postgres" >> $GITHUB_ENV
-          echo "DB_USER=postgres" >> $GITHUB_ENV
-          echo "DB_PASSWORD=postgres" >> $GITHUB_ENV
-          echo "SECRET_KEY=test-secret" >> $GITHUB_ENV
-          echo "DJANGO_ENV=local" >> $GITHUB_ENV
-
-      - name: Set up Docker Compose
-        run: |
-          docker-compose -f docker-compose.yml up -d --build
+          pip install -r requirements.txt
+          pip install pytest pytest-cov flake8
 
       - name: Wait for PostgreSQL to be ready
         run: |
-          until docker-compose exec -T db pg_isready -h db -p 5432; do
+          until pg_isready -h localhost -p 5432; do
             echo "Waiting for PostgreSQL..."
             sleep 1
           done
 
       - name: Run migrations
-        run: docker-compose exec web python manage.py migrate
+        run: python manage.py migrate
 
       - name: Run tests with coverage
-        run: docker-compose exec web pytest --cov=api --cov-report=term
+        run: pytest --cov=api --cov-report=term
 
       - name: Run flake8
-        run: docker-compose exec web flake8 .
-
-      - name: Shutdown Docker Compose containers
-        run: docker-compose down
+        run: flake8 .
