@@ -1,12 +1,11 @@
 import os
 import django
 
+from api.core.models import Country, City
+
 # Update this if your settings module path is different!
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
-
-from api.core.models import Country, City
-
 
 # --- YOU CAN EDIT THIS DATA ---
 COUNTRIES = [
