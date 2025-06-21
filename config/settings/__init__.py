@@ -1,10 +1,8 @@
 # flake8: noqa F401
 
-from decouple import config
+from config.env import env
 
-env = config('DJANGO_ENV', default='local').lower()
-
-if env == 'prod':
+if env('DJANGO_ENV') == 'prod':
     from .prod import *  # Import production settings
 else:
     from .local import *  # Import local settings

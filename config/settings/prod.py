@@ -1,24 +1,18 @@
 # flake8: noqa F401, F403
 
 from .base import *
+from config.env import env
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default='*')
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', 'postgres'),
-        'USER': config('DB_USER', 'postgres'),
-        'PASSWORD': config('DB_PASSWORD', ''),
-        'HOST': config('DB_HOST', 'localhost'),
-        'PORT': config('DB_PORT', 5432),
-    }
+    'default': env.db('DATABASE_URL')
 }
 
 REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
