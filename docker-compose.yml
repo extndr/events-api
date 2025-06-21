@@ -5,7 +5,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - .env
+      - .env.prod
     ports:
       - "${DB_PORT:-5432}:5432"
     profiles:
@@ -17,7 +17,7 @@ services:
     volumes:
       - .:/app
     env_file:
-      - .env
+      - .env.${DJANGO_ENV:-local}
     ports:
       - "8000:8000"
 
