@@ -17,7 +17,7 @@ services:
       - "8025:8025"  # Web UI
       - "1025:1025"  # SMTP
     profiles:
-      - local
+      - default
 
   web:
     build: .
