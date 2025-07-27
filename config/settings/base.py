@@ -23,7 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY', default='secret-key')
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost',])
 
 # Application definition
 
@@ -55,6 +57,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+DATABASES = {
+    'default': env.db(default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+}
 
 ROOT_URLCONF = 'config.urls'
 
@@ -148,8 +154,4 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': False,
 }
 
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'Events API',
-    'DESCRIPTION': 'API for managing users, profiles, countries, cities, and events.',
-    'VERSION': '1.0.0',
-}
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='no-reply@domain.com')

@@ -1,0 +1,18 @@
+[
+  {
+    "model": "core.country",
+    "pk": 1,
+    "fields": {
+      "name": "Poland",
+      "code": "PL"
+    }
+  },
+  {
+    "model": "core.country",
+    "pk": 2,
+    "fields": {
+      "name": "Germany",
+      "code": "DE"
+    }
+  }
+]

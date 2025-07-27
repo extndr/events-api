@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=24, unique=True)
+    name = models.CharField(max_length=64, unique=True)
     code = models.CharField(
         max_length=2,
         unique=True,

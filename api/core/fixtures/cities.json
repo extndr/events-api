@@ -1,0 +1,26 @@
+[
+  {
+    "model": "core.city",
+    "pk": 1,
+    "fields": {
+      "name": "Warsaw",
+      "country": 1
+    }
+  },
+  {
+    "model": "core.city",
+    "pk": 2,
+    "fields": {
+      "name": "Krakow",
+      "country": 1
+    }
+  },
+  {
+    "model": "core.city",
+    "pk": 3,
+    "fields": {
+      "name": "Berlin",
+      "country": 2
+    }
+  }
+]
