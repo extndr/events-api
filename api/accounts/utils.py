@@ -30,7 +30,7 @@ def get_user_from_token(token):
 
     try:
         access = AccessToken(token)
-        return User.objects.get(id=access['user_id'])
+        return User.objects.get(id=access["user_id"])
     except Exception:
         return None
 
@@ -41,9 +41,10 @@ def build_password_reset_url(user, request) -> str:
     """
 
     token = generate_reset_token(user)
-    reset_url = request.build_absolute_uri(
-        reverse("reset-password-confirm")
-    ) + f"?token={token}"
+    reset_url = (
+        request.build_absolute_uri(reverse("reset-password-confirm"))
+        + f"?token={token}"
+    )
     return reset_url
 
 
@@ -54,8 +55,8 @@ def send_password_reset_email(user, request):
 
     reset_url = build_password_reset_url(user=user, request=request)
     send_mail(
-        'Password Reset',
-        f'Click the link to reset your password: {reset_url}',
+        "Password Reset",
+        f"Click the link to reset your password: {reset_url}",
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
     )

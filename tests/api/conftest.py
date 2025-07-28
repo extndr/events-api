@@ -34,17 +34,19 @@ def factory():
 
 @pytest.fixture
 def country_factory():
-    def create_country(name='testcountry', country_code=None):
+    def create_country(name="testcountry", country_code=None):
         if country_code is None:
-            country_code = ''.join(random.choices(string.ascii_uppercase, k=2))
+            country_code = "".join(random.choices(string.ascii_uppercase, k=2))
         return Country.objects.create(name=name, code=country_code)
+
     return create_country
 
 
 @pytest.fixture
 def city_factory(country):
-    def create_city(name='testcity', country=country):
+    def create_city(name="testcity", country=country):
         return City.objects.create(name=name, country=country)
+
     return create_city
 
 
@@ -54,10 +56,10 @@ def user_factory(country):
         # generate unique 8-character id using uuid
         uid = uuid.uuid4().hex[:8]
         defaults = {
-            'username': f'user_{uid}',  # unique username with uid
-            'email': f'{uid}@example.com',  # unique email with uid
-            'password': 'testpassword',
-            'country': country,
+            "username": f"user_{uid}",  # unique username with uid
+            "email": f"{uid}@example.com",  # unique email with uid
+            "password": "testpassword",
+            "country": country,
         }
         defaults.update(kwargs)
         return User.objects.create_user(**defaults)
@@ -78,9 +80,9 @@ def city(city_factory):
 @pytest.fixture
 def user(user_factory):
     return user_factory(
-        username='testuser',
-        email='testuser@email.com',
-        password='testpassword',
+        username="testuser",
+        email="testuser@email.com",
+        password="testpassword",
         is_staff=False,
     )
 

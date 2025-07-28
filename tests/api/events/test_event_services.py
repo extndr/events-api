@@ -7,7 +7,7 @@ from api.events.services import EventService
 def test_add_attendee(user, event):
     result = EventService.add_attendee(event, user)
 
-    assert 'now attending' in result
+    assert "now attending" in result
     assert user in event.attendees.all()
 
 
@@ -29,8 +29,8 @@ def test_add_attendee_already_attending(user, event):
 
 @pytest.mark.django_db
 def test_add_attendee_event_full(user_factory, event_factory):
-    user1 = user_factory(username='user1')
-    user2 = user_factory(username='user2')
+    user1 = user_factory(username="user1")
+    user2 = user_factory(username="user2")
 
     event = event_factory(capacity=1)
     event.attendees.add(user1)

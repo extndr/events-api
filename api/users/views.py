@@ -9,7 +9,7 @@ from .serializers import (
     UserDetailSerializer,
     EnhancedUserSerializer,
     UserSummarySerializer,
-    PrivateUserSerializer
+    PrivateUserSerializer,
 )
 from api.core.permissions import IsSelfOrReadOnly
 
@@ -21,9 +21,11 @@ User = get_user_model()
     description="Returns a list of all users with basic information.",
     responses={
         200: OpenApiResponse(description="List of users retrieved successfully"),
-        400: OpenApiResponse(description="Bad request (e.g., invalid query parameters)."),
-        500: OpenApiResponse(description="Internal server error.")
-    }
+        400: OpenApiResponse(
+            description="Bad request (e.g., invalid query parameters)."
+        ),
+        500: OpenApiResponse(description="Internal server error."),
+    },
 )
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
@@ -39,12 +41,15 @@ class UserListView(generics.ListAPIView):
         400: OpenApiResponse(description="Bad request (e.g., invalid input)."),
         403: OpenApiResponse(description="Authentication required."),
         404: OpenApiResponse(description="User not found."),
-        500: OpenApiResponse(description="Internal server error.")
-    }
+        500: OpenApiResponse(description="Internal server error."),
+    },
 )
 class UserDetailView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
-    permission_classes = (IsAuthenticated, IsSelfOrReadOnly,)
+    permission_classes = (
+        IsAuthenticated,
+        IsSelfOrReadOnly,
+    )
 
     def get_serializer_class(self):
         if self.request.user.is_staff:
@@ -56,12 +61,16 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
     summary="Retrieve or update the authenticated user's details",
     description="Retrieve or update the details of the currently authenticated user.",
     responses={
-        200: OpenApiResponse(description="User details retrieved or updated successfully."),
+        200: OpenApiResponse(
+            description="User details retrieved or updated successfully."
+        ),
         400: OpenApiResponse(description="Bad request (validation errors)."),
         401: OpenApiResponse(description="Authentication required."),
-        403: OpenApiResponse(description="Forbidden access (insufficient permissions)."),
-        500: OpenApiResponse(description="Internal server error.")
-    }
+        403: OpenApiResponse(
+            description="Forbidden access (insufficient permissions)."
+        ),
+        500: OpenApiResponse(description="Internal server error."),
+    },
 )
 class MeView(generics.RetrieveUpdateAPIView):
     serializer_class = PrivateUserSerializer

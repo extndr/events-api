@@ -10,7 +10,9 @@ class UserService:
     """
 
     @staticmethod
-    def register_user(username: str, email: str, password: str, country: Country) -> User:
+    def register_user(
+        username: str, email: str, password: str, country: Country
+    ) -> User:
         """
         Register a new user with the given credentials and country.
         """

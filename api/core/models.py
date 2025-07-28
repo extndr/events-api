@@ -9,7 +9,7 @@ class Country(models.Model):
     )
 
     class Meta:
-        verbose_name_plural = 'Countries'
+        verbose_name_plural = "Countries"
 
     def __str__(self):
         return self.name
@@ -18,11 +18,11 @@ class Country(models.Model):
 class City(models.Model):
     name = models.CharField(max_length=24, unique=True)
     country = models.ForeignKey(
-        Country, on_delete=models.CASCADE, related_name='cities'
+        Country, on_delete=models.CASCADE, related_name="cities"
     )
 
     class Meta:
-        verbose_name_plural = 'Cities'
+        verbose_name_plural = "Cities"
 
     def __str__(self):
         return self.name

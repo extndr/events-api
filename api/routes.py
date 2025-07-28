@@ -5,8 +5,8 @@ from api.events.views import EventViewSet
 
 router = SimpleRouter()
 
-router.register(r'countries', CountryViewSet, basename='country')
-router.register(r'cities', CityViewSet, basename='city')
-router.register(r'events', EventViewSet, basename='event')
+router.register(r"countries", CountryViewSet, basename="country")
+router.register(r"cities", CityViewSet, basename="city")
+router.register(r"events", EventViewSet, basename="event")
 
 urlpatterns = router.urls

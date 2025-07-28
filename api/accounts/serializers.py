@@ -10,34 +10,27 @@ from .services import UserService
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
-        min_length=3,
-        validators=[
-            UniqueValidator(queryset=User.objects.all())
-        ]
+        min_length=3, validators=[UniqueValidator(queryset=User.objects.all())]
     )
     country = serializers.PrimaryKeyRelatedField(
-        queryset=Country.objects.all(),
-        required=True
+        queryset=Country.objects.all(), required=True
     )
     email = serializers.EmailField(
-        required=True,
-        validators=[
-            UniqueValidator(queryset=User.objects.all())
-        ]
+        required=True, validators=[UniqueValidator(queryset=User.objects.all())]
     )
     password = serializers.CharField(
-        style={'input_type': 'password'},
+        style={"input_type": "password"},
         write_only=True,
-        validators=[validate_password]
+        validators=[validate_password],
     )
 
     class Meta:
         model = User
         fields = (
-            'username',
-            'country',
-            'email',
-            'password',
+            "username",
+            "country",
+            "email",
+            "password",
         )
 
     def create(self, validated_data):
@@ -53,7 +46,7 @@ class ResetPasswordRequestSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if not User.objects.filter(email=value).exists():
-            raise serializers.ValidationError('User with this email not found.')
+            raise serializers.ValidationError("User with this email not found.")
         return value
 
 
@@ -65,16 +58,15 @@ class ResetPasswordConfirmSerializer(serializers.Serializer):
     """
 
     new_password = serializers.CharField(
-        style={'input_type': 'password'},
+        style={"input_type": "password"},
         write_only=True,
-        validators=[validate_password]
+        validators=[validate_password],
     )
     confirm_password = serializers.CharField(
-        style={'input_type': 'password'},
-        write_only=True
+        style={"input_type": "password"}, write_only=True
     )
 
     def validate(self, data):
-        if data['new_password'] != data['confirm_password']:
-            raise serializers.ValidationError('Passwords do not match.')
+        if data["new_password"] != data["confirm_password"]:
+            raise serializers.ValidationError("Passwords do not match.")
         return data

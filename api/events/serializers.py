@@ -22,18 +22,18 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id',
-            'title',
-            'about',
-            'organizer',
-            'capacity',
-            'city',
-            'location',
-            'start_time',
-            'end_time',
-            'attendees',
-            'attendees_count',
-            'url'
+            "id",
+            "title",
+            "about",
+            "organizer",
+            "capacity",
+            "city",
+            "location",
+            "start_time",
+            "end_time",
+            "attendees",
+            "attendees_count",
+            "url",
         )
 
     def get_attendees_count(self, obj):
@@ -49,17 +49,17 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         Ensures the event doesn't start in the past and that the end time is after the start time.
         """
 
-        start_time = data.get('start_time')
-        end_time = data.get('end_time')
+        start_time = data.get("start_time")
+        end_time = data.get("end_time")
 
         errors = {}
 
         if start_time and end_time:
             if end_time <= start_time:
-                errors['end_time'] = "End time must be after start time."
+                errors["end_time"] = "End time must be after start time."
 
             if start_time < timezone.now():
-                errors['start_time'] = "Event cannot start in the past."
+                errors["start_time"] = "Event cannot start in the past."
 
         if errors:
             raise serializers.ValidationError(errors)
@@ -72,7 +72,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         """
 
         rep = super().to_representation(instance)
-        rep['city'] = instance.city.name
+        rep["city"] = instance.city.name
         return rep
 
 
@@ -84,11 +84,11 @@ class EventSummarySerializer(EventSerializer):
     class Meta(EventSerializer.Meta):
         model = Event
         fields = (
-            'id',
-            'title',
-            'city',
-            'capacity',
-            'start_time',
-            'attendees_count',
-            'url'
+            "id",
+            "title",
+            "city",
+            "capacity",
+            "start_time",
+            "attendees_count",
+            "url",
         )

@@ -8,10 +8,9 @@ class CityFilter(django_filters.FilterSet):
     """
 
     country = django_filters.CharFilter(
-        field_name='country__code',
-        lookup_expr='iexact'
+        field_name="country__code", lookup_expr="iexact"
     )
 
     class Meta:
         model = City
-        fields = ('country',)
+        fields = ("country",)
