@@ -1,142 +1,67 @@
-
 # Events API
 
-A production-ready, fully containerized Django REST API for managing city-based events.
+[![CI](https://github.com/extndr/events-api/actions/workflows/ci.yml/badge.svg)](https://github.com/extndr/events-api/actions)
+![Python](https://img.shields.io/badge/python-3.12+-blue)
+![Docker](https://img.shields.io/badge/docker-ready-blue)
 
----
+> Modular, containerized Django REST API for city-based event management with JWT authentication, role-based permissions, and flexible filtering.
 
-## Tech Stack
+## Table of Contents
 
-- Django 5.2
-- Django REST Framework 3.16.0
-- djangorestframework-simplejwt 5.5.0 (JWT authentication)
-- drf-spectacular 0.28.0 (OpenAPI/Swagger schema generation)
-- django-filter 25.1 (advanced filtering)
-- django-sendgrid-v5 1.3.0 (SendGrid email integration)
-- psycopg2-binary 2.9.10 (PostgreSQL adapter)
-- whitenoise 6.9.0 (static files handling)
-- gunicorn 23.0.0 (production WSGI server)
-- pytest-django 4.11.1 (testing)
-- django-environ 0.12.0 (environment variables management)
-- flake8 7.2.0 (code style checking)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Quick Start](#-quick-start)
+- [Roadmap](#-technical-roadmap)
+- [Project Purpose](#-project-purpose)
+- [Contact](#-contact)
 
----
+## 🚀 Features
 
-## Key Features
+- **Authentication:** JWT-based login/registration with secure password reset workflows
+- **Event Management:** CRUD operations with capacity tracking and attendance management
+- **Permissions:** Role-based access control (organizers manage events, users join/leave)
+- **Service Layer:** Clean business logic separation with dedicated service classes
+- **API Documentation:** Auto-generated OpenAPI 3.0 docs via drf-spectacular
+- **Security:** Short-lived JWT tokens, input validation, email verification
+- **Testing:** 90%+ coverage with pytest-django and factory pattern
+- **CI:** GitHub Actions pipeline with automated testing and linting
 
-- User authentication: JWT-based login, registration, and password reset via email  
-- Event management: create, update, attend, and leave events with capacity limits  
-- Role-based permissions: organizers manage their own events, users can join or leave  
-- Advanced filtering: filter events by country, city, organizer, etc.  
-- Django Admin interface for managing users and locations  
-- API documentation generated with drf-spectacular, available locally (Swagger / Redoc)  
-- Email handling: MailHog for local development, SendGrid in production  
+## 🛠 Tech Stack
 
----
+- **Backend:** Django 5.2, DRF, PostgreSQL
+- **Authentication:** JWT tokens with secure email workflows
+- **Architecture:** Service layer pattern, clean separation of concerns
+- **Testing:** pytest-django, factory-based fixtures, 90%+ coverage
+- **Quality:** Black, Flake8, GitHub Actions
+- **Infrastructure:** Docker, Docker Compose
 
-## Getting Started
+## 📘 API Documentation
 
-### 1. Clone the repository
+- OpenAPI schema: [localhost:8000/api/schema/](http://localhost:8000/api/schema/)
+- Interactive docs: [localhost:8000/api/docs/](http://localhost:8000/api/docs/)
+
+## ⚡ Quick Start
 
 ```bash
 git clone https://github.com/extndr/events-api.git
 cd events-api
+cp .env.example .env
+docker-compose up --build -d
+docker-compose exec web python manage.py load_initial_data
+
+# Create superuser for full access to API endpoints
+docker-compose exec web python manage.py createsuperuser
 ```
 
-### 2. Environment configuration
+## 🚀 Technical Roadmap
 
-Prepare environment variable files:
+- [ ] Basic React frontend for API consumption and user interaction
+- [ ] AWS ECS deployment with Terraform infrastructure-as-code
+- [ ] Background task processing with Celery for email notifications
 
-- `.env.local` — for local development  
-- `.env.prod` — for production  
+## 📝 Project Purpose
 
-Example `.env.local`:
+This project is under active development in my free time to demonstrate backend skills with Django, containerization, JWT authentication, real-world email integration, and automated API docs — production-ready and extensible.
 
-```ini
-DJANGO_ENV=local
-SECRET_KEY=your-secret-key
-
-EMAIL_HOST=mailhog
-EMAIL_PORT=1025
-DEFAULT_FROM_EMAIL=dev@example.com
-```
-
-Example `.env.prod`:
-
-```ini
-DJANGO_ENV=prod
-SECRET_KEY=your-prod-secret-key
-
-ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
-
-DATABASE_URL=postgres://postgres:your-secure-db-password@db:5432/postgres
-
-POSTGRES_DB=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your-secure-db-password
-
-SENDGRID_API_KEY=your-sendgrid-api-key
-DEFAULT_FROM_EMAIL=no-reply@yourdomain.com
-```
-
----
-
-### 3. Running the project
-
-Run using Docker Compose with the appropriate profile:
-
-- Local development (includes MailHog):
-
-```bash
-docker-compose --profile=local up --build
-```
-
-- Production (Gunicorn server, SendGrid, PostgreSQL):
-
-```bash
-docker-compose --profile=prod up --build
-```
-
----
-
-### 4. Email testing
-
-- Local environment uses MailHog for capturing emails at: [http://localhost:8025](http://localhost:8025)  
-- Production environment sends emails through SendGrid  
-
----
-
-### 5. Running tests
-
-Run tests inside the Django container:
-
-```bash
-docker-compose exec web pytest
-```
-
----
-
-## API Documentation
-
-Available only in the local environment:
-
-- Swagger UI: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)  
-- Redoc: [http://localhost:8000/api/docs/redoc/](http://localhost:8000/api/docs/redoc/)  
-
----
-
-## Future improvements
-
-- Tracking event attendance details (status, joined_at, left_at)  
-- Background tasks with Celery (email notifications, event reminders)  
-- Frontend integration for event discovery and interaction  
-- Enhanced filtering and recommendation system  
-
----
-
-## Project purpose
-
-This project demonstrates solid backend development skills with Django, including containerization, JWT authentication, real-world email service integration, and automated API documentation — ready for production environments.
-
----
-
+## 📧 Contact
+**📧** bogdanzaharchenko7@gmail.com **🔗** [GitHub](https://github.com/extndr)
