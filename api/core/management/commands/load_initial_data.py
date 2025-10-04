@@ -13,20 +13,9 @@ class Command(BaseCommand):
     fixtures = [
         ('Countries', Country, '../fixtures/countries.json'),
         ('Cities', City, '../fixtures/cities.json'),
+        ('Users', User, '../fixtures/users.json'),
         ('Events', Event, '../fixtures/events.json'),
     ]
-
-    def create_temp_user(self):
-        temp_user, created = User.objects.get_or_create(username='tempuser')
-        if created:
-            temp_user.set_password('temppassword')
-            temp_user.save()
-            self.stdout.write('Temporary user created.')
-        return temp_user
-
-    def delete_temp_user(self, temp_user):
-        temp_user.delete()
-        self.stdout.write('Temporary user deleted.')
 
     def load_fixture_if_needed(self, name, model, fixture_path):
         if model.objects.exists():
@@ -38,9 +27,5 @@ class Command(BaseCommand):
         return True
 
     def handle(self, *args, **kwargs):
-        temp_user = self.create_temp_user()
-
         for name, model, fixture_path in self.fixtures:
             self.load_fixture_if_needed(name, model, fixture_path)
-
-        self.delete_temp_user(temp_user)

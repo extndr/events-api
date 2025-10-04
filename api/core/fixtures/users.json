@@ -1,0 +1,13 @@
+[
+  {
+    "model": "accounts.user",
+    "pk": 1,
+    "fields": {
+      "username": "John Doe",
+      "password": "pbkdf2_sha256$216000$example$hashhere",
+      "city": 1,
+      "country": 1,
+      "bio": "Python developer interested in backend development and skiing."
+    }
+  }
+]
